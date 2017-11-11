@@ -2,7 +2,7 @@
 cdef class Cmpst(Updtbl):
 
     def __init__(self,
-            list children = []
+            list children = [],
             int priority = 0):
         super().__init__(priority = priority)
 

@@ -1,11 +1,10 @@
-#TODO move to the pyx file.
 #from libc.stdint cimport uint8_t, uint32_t:
+from engine.updatable cimport Updtbl
 
-struct image{
-    int width;
-    int height;
-    void* image;
-};
+cdef struct image:
+    int width
+    int height
+    void* image
 
 
 cdef extern from "SDL2/SDL.h":
@@ -15,9 +14,17 @@ cdef extern from "SDL2/SDL.h":
         SDL_HINT_RENDER_SCALE_QUALITY
         SDL_WINDOWPOS_CENTERED
         SDL_WINDOW_FULLSCREEN
+        SDL_WINDOW_SHOWN
         SDL_WINDOWPOS_CENTERED
         SDL_RENDERER_ACCELERATED
         SDL_RENDERER
+        SDL_WINDOW_OPENGL
+
+    cdef enum bool_:
+        SDL_FALSE
+        SDL_TRUE
+
+    ctypedef bool_ SDL_bool
 
     cdef struct SDL_Window:
         pass
@@ -28,6 +35,9 @@ cdef extern from "SDL2/SDL.h":
     cdef struct SDL_Texture:
         pass
 
+    cdef struct SDL_PixelFormat:
+        pass
+
     cdef struct SDL_Rect:
         int x
         int y
@@ -36,6 +46,7 @@ cdef extern from "SDL2/SDL.h":
 
     cdef struct SDL_Surface:
         unsigned int flags
+        SDL_PixelFormat *format
         int w
         int h
         int pitch
@@ -56,29 +67,26 @@ cdef extern from "SDL2/SDL.h":
     int SDL_SetRenderDrawColor(SDL_Renderer *renderer, char r, char g, char b,
             char a)
 
+    SDL_Surface* SDL_GetWindowSurface(SDL_Window *window)
+    int SDL_FillRect(SDL_Surface *dst, SDL_Rect *rect, unsigned int color)
+    unsigned int SDL_MapRGB(SDL_PixelFormat *format, char r, char g, char b)
+
     void SDL_DestroyRenderer(SDL_Renderer *renderer)
     void SDL_DestroyWindow(SDL_Window *window)
     void SDL_Quit()
     SDL_Texture* SDL_CreateTextureFromSurface(SDL_Renderer *renderer,
             SDL_Surface *surface)
     void SDL_FreeSurface(SDL_Surface *surface)
-    int SDL_RenderCopy(SDL_Renderer *renderer, SDL_Texture *texture, SDL_Rect *srcrect, SDL_Rect *dstrect)
+    int SDL_RenderCopy(SDL_Renderer *renderer, SDL_Texture *texture,
+            SDL_Rect *srcrect, SDL_Rect *dstrect)
     void SDL_RenderPresent(SDL_Renderer *renderer)
     int SDL_RenderClear(SDL_Renderer *renderer)
     void SDL_DestroyTexture(SDL_Texture *texture)
+    int SDL_UpdateWindowSurface(SDL_Window *window)
 
 
-cdef extern from "SDL2/SDL_image.h":
-    enum:
-        IMG_INIT_PNG
 
-    int IMG_Init(int flags)
-    SDL_Surface* IMG_Load(char *file)
-    void IMG_Quit()
-    #IMG_GetError() <-Use SDL_GetError() instead.
-
-
-cdef extern from "SDL2/SDL_mixer.h"
+cdef extern from "SDL2/SDL_mixer.h":
     enum:
         MIX_DEFAULT_FORMAT
 
@@ -102,3 +110,15 @@ cdef extern from "SDL2/SDL_mixer.h"
     void Mix_FreeChunk(Mix_Music *music)
 
     #Mix_GetError() <-Use SDL_GetError() instead.
+
+cdef class View(Updtbl):
+
+    cdef SDL_Window* window
+    cdef int width
+    cdef int height
+
+    cpdef void update(self)
+    cdef void draw(self, void* image)
+    cpdef void __enter__(self)
+    cpdef void __exit__(self, exc_type, exc_val, exc_tb)
+    cdef void enter(self)
