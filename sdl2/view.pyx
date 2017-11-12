@@ -4,40 +4,67 @@ cdef class View(Updtbl):
     def __init__(self,
             int width,
             int height,
+            tuple coor,
             int priority = 0):
         super().__init__(priority = priority)
         self.width = width
         self.height = height
+        print(str(SDL_HINT_RENDER_SCALE_QUALITY))
 
-    cdef void draw(self, void *image):
-        pass
+    cpdef void draw(self, Image img,
+            int x_cell,
+            int y_cell,
+            int x_coor,
+            int y_coor):
+        cdef SDL_Rect src, buf
+        src.x = x_cell*img.width
+        src.y = y_cell*img.height
+        src.w = img.width
+        src.h = img.height
+        buf.x = x_coor
+        buf.y = y_coor
+        buf.w = img.width
+        buf.h = img.height
+        SDL_RenderCopy(self.renderer, img.texture, &src, &buf)
 
     cpdef void update(self):
-        pass
+        #Copy to the screen
+        SDL_RenderPresent(self.renderer)
+        #Clear the buffer
+        SDL_RenderClear(self.renderer)
 
     cpdef void __enter__(self):
-        self.enter()
+        cdef SDL_Surface *screenSurface
+        cdef int img_flags
+
+        if SDL_Init(SDL_INIT_VIDEO) < 0:
+            raise Exception(SDL_GetError())
+
+        if not SDL_SetHint(SDL_HINT_RENDER_SCALE_QUALITY, "1"):
+            print("Warning: Linear texture filtering not enabled!")
+
+        self.window = SDL_CreateWindow( "Temple Craft",
+                SDL_WINDOWPOS_CENTERED,
+                SDL_WINDOWPOS_CENTERED,
+                self.width,
+                self.height,
+                SDL_WINDOW_OPENGL);
+        if self.window == NULL:
+            raise Exception(SDL_GetError())
+
+        self.renderer = SDL_CreateRenderer(self.window,
+                -1,
+                SDL_RENDERER_ACCELERATED
+                | SDL_RENDERER_PRESENTVSYNC)
+        if self.renderer == NULL:
+            raise Exception(SDL_GetError())
+
+        SDL_SetRenderDrawColor(self.renderer, 0xFF, 0xFF, 0xFF, 0xFF)
+        img_flags = IMG_INIT_PNG
+        if not IMG_Init(img_flags) & img_flags:
+            raise Exception(SDL_GetError())
 
     cpdef void __exit__(self, exc_type, exc_val, exc_tb):
         SDL_DestroyWindow(self.window)
         SDL_Quit()
         self.window = NULL
-
-    cdef void enter(self):
-        cdef SDL_Surface *screenSurface
-        if SDL_Init(SDL_INIT_VIDEO) < 0:
-            print("Error: " + SDL_GetError())
-        else:
-            self.window = SDL_CreateWindow( "SDL Tutorial",
-                    SDL_WINDOWPOS_CENTERED,
-                    SDL_WINDOWPOS_CENTERED,
-                    self.width,
-                    self.height,
-                    SDL_WINDOW_OPENGL);
-            if self.window == NULL:
-                print("Error: " + SDL_GetError())
-            else:
-                screenSurface = SDL_GetWindowSurface(self.window)
-                SDL_FillRect(screenSurface, <SDL_Rect *>NULL,
-                        SDL_MapRGB(screenSurface.format, 0xFF, 0xFF, 0xFF ))
-                SDL_UpdateWindowSurface(self.window)

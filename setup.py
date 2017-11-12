@@ -5,7 +5,7 @@ from Cython.Build import cythonize
 extensions = [
     Extension("engine.*", ["engine/*.pyx"]),
     Extension("cmpnt.*", ["cmpnt/*.pyx"]),
-    Extension("sdl2.view", ["sdl2/view.pyx"],
+    Extension("sdl2.*", ["sdl2/*.pyx"],
         libraries = ["SDL2"]
     )
 ]
