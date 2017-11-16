@@ -1,6 +1,17 @@
 import os
 from libc.stdlib cimport malloc, free
 
+cdef class Image(rsrc.Image):
+
+    def __init__(self, str name, int width, int height):
+        self.width = width
+        self.height = height
+
+cdef class Music(rsrc.Music):
+    pass
+
+cdef class Clip(rsrc.Clip):
+    pass
 
 cdef class Factory:
 
@@ -45,11 +56,8 @@ cdef class Factory:
         if texture == NULL:
             raise(SDL_GetError())
 
-        img = Image(file_)
-        img.texture = texture
-        img.width = surface.w/x
-        img.height = surface.h/y
-
+        img = Image(file_, surface.w/x, surface.h/y)
+        img.pntr = texture
         SDL_FreeSurface(surface)
 
         return img
@@ -65,18 +73,22 @@ cdef class Factory:
                 self.free_clip(rsrc)
 
     cpdef void free_img(self, Image img):
-        SDL_DestroyTexture(img.texture)
+        SDL_DestroyTexture(img.pntr)
 
     cpdef Clip load_clip(self, str file_):
         cdef Clip clip
         clip = Clip(file_)
         clip.pntr = Mix_LoadWAV(file_.encode('UTF-8'))
+        if clip.pntr == NULL:
+            raise(SDL_GetError())
         return clip
 
     cpdef Music load_music(self, str file_):
         cdef Music music
         music = Music(file_)
         music.pntr = Mix_LoadMUS(file_.encode('UTF-8'))
+        if music.pntr == NULL:
+            raise(SDL_GetError())
         return music
 
     cpdef void free_clip(self, Clip clip):
@@ -85,3 +97,5 @@ cdef class Factory:
     cpdef void free_music(self, Music music):
         Mix_FreeMusic(music.pntr)
 
+    cpdef ImgRndr build_rndr(self, Image img, RndrGrd grid, View view):
+        return ImgRndr(grid, view, img)

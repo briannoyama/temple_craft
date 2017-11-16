@@ -11,21 +11,21 @@ cdef class View(Updtbl):
         self.height = height
         print(str(SDL_HINT_RENDER_SCALE_QUALITY))
 
-    cpdef void draw(self, Image img,
-            int x_cell,
-            int y_cell,
-            int x_coor,
-            int y_coor):
+    cpdef void draw(self, ImgRndr img_rndr):
         cdef SDL_Rect src, buf
-        src.x = x_cell*img.width
-        src.y = y_cell*img.height
+        cdef RndrGrd grid
+        cdef Image img
+        grid = img_rndr.grid
+        img = img_rndr.img
+        src.x = grid.x_cell*img.width
+        src.y = grid.y_cell*img.height
         src.w = img.width
         src.h = img.height
-        buf.x = x_coor
-        buf.y = y_coor
+        buf.x = grid.pos[0]
+        buf.y = grid.pos[1] - grid.pos[2]
         buf.w = img.width
         buf.h = img.height
-        SDL_RenderCopy(self.renderer, img.texture, &src, &buf)
+        SDL_RenderCopy(self.renderer, img.pntr, &src, &buf)
 
     cpdef void update(self):
         #Copy to the screen

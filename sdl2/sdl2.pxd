@@ -1,16 +1,3 @@
-from engine import rsrc
-
-
-cdef class Image(rsrc.Image):
-    cdef int width
-    cdef int height
-    cdef SDL_Texture* texture
-
-cdef class Music(rsrc.Music):
-    cdef Mix_Music* pntr
-
-cdef class Clip(rsrc.Clip):
-    cdef Mix_Chunk* pntr
 
 cdef extern from "SDL2/SDL.h":
     enum:

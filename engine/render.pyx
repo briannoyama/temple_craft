@@ -1,5 +1,12 @@
 
-cdef class RndrGrd(Updtbl):
+cdef class ImgRndr(Updtbl):
+
+    def __init__(self,
+            RndrGrd grid):
+        self.grid = grid
+
+
+cdef class RndrGrd:
 
     def __init__(self,
             Pstn pos,
@@ -11,10 +18,8 @@ cdef class RndrGrd(Updtbl):
         self.x_cell = x_cell
         self.y_cell = y_cell
 
-    cpdef void update(self):
-        raise Exception('Error, use derived view version instead.')
 
-cdef class AnmtnGrid(RndrGrd):
+cdef class AnmtnGrd(Updtbl):
 
     def __init__(self, RndrGrd render, list sqnc, int frame = 0):
         self.render = render
