@@ -126,6 +126,7 @@ cdef extern from "SDL2/SDL_mixer.h":
     void Mix_FreeMusic(Mix_Music *chunk)
     void Mix_FreeChunk(Mix_Chunk *music)
 
+
 cdef extern from "SDL2/SDL_image.h":
     enum:
         IMG_INIT_PNG

@@ -4,12 +4,12 @@ cdef class View(Updtbl):
     def __init__(self,
             int width,
             int height,
-            tuple coor,
+            Pstn offset,
             int priority = 0):
         super().__init__(priority = priority)
         self.width = width
         self.height = height
-        print(str(SDL_HINT_RENDER_SCALE_QUALITY))
+        self.offset = offset
 
     cpdef void draw(self, ImgRndr img_rndr):
         cdef SDL_Rect src, buf

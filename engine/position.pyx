@@ -1,9 +1,9 @@
-
+import numpy as np
 
 
 cdef class Pstn:
 
-    def __init__(self, list c=(0,0)):
+    def __init__(self, list c= [0, 0]):
         self.c = np.array(c, dtype = np.int)
 
     cpdef np.ndarray coor(self):
@@ -11,7 +11,7 @@ cdef class Pstn:
 
 cdef class RlPstn(Pstn):
 
-    def __init__(self, Pstn pos_obj, list c = (0,0)):
+    def __init__(self, Pstn pos_obj, list c = [0, 0]):
         self.pos_obj = pos_obj
         super().__init__(c)
 
