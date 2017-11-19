@@ -1,6 +1,5 @@
-from engine.render cimport RndrGrd
 from engine.updatable cimport Updtbl
-from engine.position cimport Pstn 
+from engine.position cimport Pstn
 from sdl2.factory cimport Image
 from sdl2.render cimport ImgRndr
 from sdl2.sdl2 cimport *
@@ -15,5 +14,5 @@ cdef class View(Updtbl):
 
     cpdef void update(self)
     cpdef void draw(self, ImgRndr img_rndr)
-    cpdef void __enter__(self)
+    cpdef View __enter__(self)
     cpdef void __exit__(self, exc_type, exc_val, exc_tb)

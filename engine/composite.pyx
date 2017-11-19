@@ -5,7 +5,6 @@ cdef class Cmpst(Updtbl):
             list children = [],
             int priority = 0):
         super().__init__(priority = priority)
-
         self.children = Updtbl()
         for child in reversed(children):
             self.children._set_next(child)

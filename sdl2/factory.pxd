@@ -1,13 +1,10 @@
 from sdl2.sdl2 cimport *
 from sdl2.render cimport ImgRndr
 from sdl2.view cimport View
-from engine.render cimport RndrGrd
+from engine.position cimport Pstn
 from engine cimport resource as rsrc
 
 
-cdef tuple IMAGE = ('.png', '.bmp', '.jpg', '.jpeg')
-cdef tuple MUSIC = ('_mus.wav', '_mus.ogg', '.midi', '.mp3')
-cdef tuple CLIP = ('.wav', '.ogg', '.voc', '.aif')
 
 cdef class Image(rsrc.Image):
     cdef int width
@@ -22,7 +19,8 @@ cdef class Clip(rsrc.Clip):
 
 cdef class Factory:
 
-    cdef SDL_Renderer* renderer
+    cdef View v
+    cdef dict rsrcs
 
     cpdef dict load_all(self, str file_)
     cpdef Image load_img(self, str file_)
@@ -35,4 +33,9 @@ cdef class Factory:
     cpdef void free_clip(self, Clip clip)
     cpdef void free_music(self, Music music)
 
-    cpdef ImgRndr build_rndr(self, Image img, RndrGrd grid, View view)
+    cpdef ImgRndr build_rndr(self, Image img,
+            Pstn pos,
+            View view,
+            int x_cell=*,
+            int y_cell=*,
+            int priority=*)

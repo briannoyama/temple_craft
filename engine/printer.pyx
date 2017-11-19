@@ -1,7 +1,7 @@
 from engine.updatable cimport Updtbl
 
 
-cdef class Tst(Updtbl):
+cdef class Prntr(Updtbl):
 
     cdef str name
 

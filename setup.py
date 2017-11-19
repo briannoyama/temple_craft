@@ -15,7 +15,6 @@ if "win" in sys.platform:
 extensions = [
     Extension("engine.*", ["engine/*.pyx"],
         include_dirs=[numpy.get_include()]),
-    Extension("cmpnt.*", ["cmpnt/*.pyx"]),
     Extension("sdl2.*", ["sdl2/*.pyx"],
         include_dirs=sdl_include_dirs,
         libraries=["SDL2", "SDL2_image", "SDL2_mixer"],

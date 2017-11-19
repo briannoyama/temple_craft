@@ -1,3 +1,4 @@
+cimport numpy as np
 
 cdef class View(Updtbl):
 
@@ -13,16 +14,18 @@ cdef class View(Updtbl):
 
     cpdef void draw(self, ImgRndr img_rndr):
         cdef SDL_Rect src, buf
-        cdef RndrGrd grid
         cdef Image img
-        grid = img_rndr.grid
+        cdef np.ndarray coor
+
         img = img_rndr.img
-        src.x = grid.x_cell*img.width
-        src.y = grid.y_cell*img.height
+        coor = img_rndr.pos.coor()
+
+        src.x = img_rndr.x_cell*img.width
+        src.y = img_rndr.y_cell*img.height
         src.w = img.width
         src.h = img.height
-        buf.x = grid.pos[0]
-        buf.y = grid.pos[1] - grid.pos[2]
+        buf.x = coor[0]
+        buf.y = coor[1] - coor[2]
         buf.w = img.width
         buf.h = img.height
         SDL_RenderCopy(self.renderer, img.pntr, &src, &buf)
@@ -33,8 +36,7 @@ cdef class View(Updtbl):
         #Clear the buffer
         SDL_RenderClear(self.renderer)
 
-    cpdef void __enter__(self):
-        cdef SDL_Surface *screenSurface
+    cpdef View __enter__(self):
         cdef int img_flags
 
         if SDL_Init(SDL_INIT_VIDEO) < 0:
@@ -63,6 +65,9 @@ cdef class View(Updtbl):
         img_flags = IMG_INIT_PNG
         if not IMG_Init(img_flags) & img_flags:
             raise Exception(SDL_GetError())
+        SDL_RenderClear(self.renderer)
+        SDL_RenderPresent(self.renderer)
+        return self
 
     cpdef void __exit__(self, exc_type, exc_val, exc_tb):
         SDL_DestroyWindow(self.window)
