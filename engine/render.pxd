@@ -8,6 +8,7 @@ cdef class ImgRndr(Updtbl):
     cdef Pstn pos
     cdef public int x_cell
     cdef public int y_cell
+    cdef str name
 
 
 cdef class Anmtn(Updtbl):

@@ -4,11 +4,13 @@ cdef class ImgRndr(Updtbl):
 
     def __init__(self,
             Pstn pos,
+            str name,
             int x_cell = 0,
             int y_cell = 0,
             priority = 0):
         super().__init__(priority)
         self.pos = pos
+        self.name = intern(name)
         self.x_cell = x_cell
         self.y_cell = y_cell
 

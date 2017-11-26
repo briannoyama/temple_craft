@@ -2,29 +2,28 @@ from sdl2.sdl2 cimport *
 from sdl2.render cimport ImgRndr
 from sdl2.view cimport View
 from engine.position cimport Pstn
-from engine cimport resource as rsrc
+from engine cimport render as rndr
+from engine cimport factory as fctr
 
-
-
-cdef class Image(rsrc.Image):
+cdef class Image:
     cdef int width
     cdef int height
     cdef SDL_Texture* pntr
 
-cdef class Music(rsrc.Music):
+cdef class Music:
     cdef Mix_Music* pntr
 
-cdef class Clip(rsrc.Clip):
+cdef class Clip:
     cdef Mix_Chunk* pntr
 
-cdef class Factory:
+cdef class Factory(fctr.Factory):
 
     cdef View v
-    cdef dict rsrcs
+    cdef public dict rsrcs
 
-    cpdef dict load_all(self, str file_)
+    cpdef void load_all(self, str file_)
     cpdef Image load_img(self, str file_)
-    cpdef void free_all(self, dict resources)
+    cpdef void free_all(self)
     cpdef void free_img(self, Image img)
 
     #Music library.
@@ -33,9 +32,4 @@ cdef class Factory:
     cpdef void free_clip(self, Clip clip)
     cpdef void free_music(self, Music music)
 
-    cpdef ImgRndr build_rndr(self, Image img,
-            Pstn pos,
-            View view,
-            int x_cell=*,
-            int y_cell=*,
-            int priority=*)
+    cpdef rndr.ImgRndr build_rndr(self, rndr.ImgRndr)

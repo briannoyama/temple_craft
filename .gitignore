@@ -3,7 +3,6 @@
 build/*
 *.pyc
 *.swp
-test.py
-#For Windows
 **/__pycache__
+#For Windows
 *.pyd

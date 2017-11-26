@@ -1,0 +1,8 @@
+
+
+1. Implement input object
+2. Implement game loop object
+3. Implement movement/basic physics
+4. Implement Collision map
+5. Implement Camera
+6. Implement Memento pattern.
